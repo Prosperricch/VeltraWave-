@@ -1,9 +1,11 @@
 import hashlib
 import hmac
 import os
+import sqlite3
 import threading
 import time
 import uuid
+from contextlib import contextmanager
 
 import requests
 from flask import Flask, render_template, request, jsonify
@@ -139,15 +141,99 @@ def _apply_airtime_discount(airtime_amount: int) -> int:
 
 
 # ============================================================================
-# In-memory order tracker, keyed by Paystack reference.
+# Persistent order tracker, keyed by Paystack reference.
 #
-# NOTE: this resets whenever the server restarts and won't work across
-# multiple worker processes. It's fine for a single dev/test instance, but
-# before going to production this should be swapped for a real store
-# (a database table, Redis, even a JSON file) so orders survive restarts
-# and are visible across workers.
+# IMPORTANT FIX: this used to be a plain in-memory dict (`ORDERS = {}`).
+# That silently breaks in production because gunicorn can run more than
+# one worker *process*, and each process gets its OWN copy of that dict.
+# What was actually happening:
+#   1. Browser POSTs /purchase_data -> handled by (say) worker A, which
+#      creates the order in worker A's in-memory ORDERS dict.
+#   2. Paystack's charge.success webhook POSTs /payment-webhooks -> load
+#      balanced to whichever worker happens to be free (maybe worker B),
+#      which has no idea that reference exists, so the "order is None"
+#      branch fires and nothing gets updated anywhere the customer can see.
+#   3. The ticket page polls GET /api/order-status/<ref> -> handled by
+#      worker A, C, or whoever's free -> still shows "pending" forever,
+#      because the success/failure was only ever written into worker B's
+#      private memory.
+# This is exactly the "still processing / never resolves" symptom.
+#
+# Fix: back the order store with a small SQLite file on disk. SQLite file
+# access is shared by every worker process on the same instance (unlike
+# a Python dict in RAM), so no matter which worker handles which request,
+# they all read/write the same underlying data. WAL mode keeps concurrent
+# reads/writes from a handful of workers safe and fast.
+#
+# Note: Render's free-tier disk is still ephemeral across deploys/restarts
+# (a fresh deploy wipes it), so this doesn't give you permanent history —
+# but it DOES fix the cross-worker bug, which is the actual issue here. If
+# you need orders to survive redeploys long-term, swap this for Postgres/
+# Redis later; the order_get/order_set/order_update functions below are the
+# only place you'd need to change.
 # ============================================================================
-ORDERS = {}
+DB_PATH = os.environ.get(
+    "ORDERS_DB_PATH",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "orders.db")
+)
+
+
+@contextmanager
+def _db_conn():
+    conn = sqlite3.connect(DB_PATH, timeout=10)
+    try:
+        yield conn
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _init_orders_db():
+    with _db_conn() as conn:
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS orders (
+                reference   TEXT PRIMARY KEY,
+                data        TEXT NOT NULL,
+                created_at  REAL NOT NULL
+            )
+        """)
+
+
+def order_set(reference, order):
+    """Create or fully overwrite the stored order for this reference."""
+    with _db_conn() as conn:
+        conn.execute(
+            """
+            INSERT INTO orders (reference, data, created_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(reference) DO UPDATE SET data = excluded.data
+            """,
+            (reference, json.dumps(order), order.get("created_at", time.time())),
+        )
+
+
+def order_get(reference):
+    """Return the stored order dict for this reference, or None."""
+    with _db_conn() as conn:
+        row = conn.execute(
+            "SELECT data FROM orders WHERE reference = ?", (reference,)
+        ).fetchone()
+    return json.loads(row[0]) if row else None
+
+
+def order_update(reference, **changes):
+    """Merge `changes` into the existing order and persist it.
+    Returns the updated order, or None if the reference doesn't exist."""
+    order = order_get(reference)
+    if order is None:
+        return None
+    order.update(changes)
+    order_set(reference, order)
+    return order
+
+
+_init_orders_db()
 
 # Substrings that, when they appear in a failed provider response, indicate
 # the failure was OUR fault (e.g. low wallet balance with n3tdata) rather
@@ -258,7 +344,7 @@ def purchase_data():
     except PaystackError as e:
         return {"status": False, "message": str(e)}, 400
 
-    ORDERS[reference] = {
+    order_set(reference, {
         "status": "pending",
         "network": network,
         "phone": phone,
@@ -269,7 +355,7 @@ def purchase_data():
         "customer_message": "We're confirming your payment and processing your order…",
         "admin_message": None,
         "created_at": time.time(),
-    }
+    })
     return {
         "status": True,
         "message": "Payment link generated",
@@ -317,7 +403,7 @@ def purchase_airtime():
     except PaystackError as e:
         return {"status": False, "message": str(e)}, 400
 
-    ORDERS[reference] = {
+    order_set(reference, {
         "status": "pending",
         "network": network,
         "phone": phone,
@@ -330,7 +416,7 @@ def purchase_airtime():
         "customer_message": "We're confirming your payment and processing your order…",
         "admin_message": None,
         "created_at": time.time(),
-    }
+    })
     return {
         "status": True,
         "message": "Payment link generated",
@@ -365,7 +451,7 @@ def payment_webhook():
         if event == "charge.success":
             metadata = data.get("metadata", {})
             reference = data.get("reference")
-            order = ORDERS.get(reference)
+            order = order_get(reference)
 
             purchase_type = metadata.get("type", "data")
             phone = metadata.get("phone")
@@ -433,6 +519,7 @@ def payment_webhook():
                         order["status"] = "failed"
                         order["admin_message"] = f"Invalid plan_id in metadata: {plan_id!r}"
                         order["customer_message"] = _customer_message_for_failure("")
+                        order_set(reference, order)
                     return {"message": "success"}, 200
 
                 # n3tdata expects the provider's own plan_id (integer), not the plan name
@@ -470,10 +557,12 @@ def payment_webhook():
                     f"Your {order.get('plan_name', 'purchase')} was successful "
                     f"and has been delivered to {clean_phone}."
                 )
+                order_set(reference, order)
             else:
                 order["status"] = "failed"
                 order["admin_message"] = provider_message  # internal only — never sent to the client
                 order["customer_message"] = _customer_message_for_failure(provider_message)
+                order_set(reference, order)
 
             return {"message": "success"}, 200
 
@@ -495,7 +584,7 @@ def order_status_page():
 
 @app.route("/api/order-status/<reference>")
 def order_status_api(reference):
-    order = ORDERS.get(reference)
+    order = order_get(reference)
     if not order:
         return jsonify({"status": "pending", "customer_message": "We're confirming your payment…"})
 

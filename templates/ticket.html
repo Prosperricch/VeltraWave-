@@ -190,7 +190,7 @@
   <div class="grid-overlay"></div>
 
   <div class="pheader">
-    <a href="data.html" class="back-btn">
+    <a href="{{ url_for('data_page') }}" class="back-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#151230" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
     </a>
     <h1>Order Status</h1>
@@ -228,8 +228,8 @@
     </button>
 
     <div class="cta-row">
-      <a href="data.html" class="cta ghost">Buy More Data</a>
-      <a href="dashboard.html" class="cta primary">Back to Dashboard</a>
+      <a href="{{ url_for('data_page') }}" class="cta ghost">Buy More Data</a>
+      <a href="{{ url_for('dashboard') }}" class="cta primary">Back to Dashboard</a>
     </div>
 
     <p class="helper-note">Keep your reference number handy — if you ever need to contact support about this order, this is what they'll ask for.</p>
@@ -242,21 +242,25 @@
 
 <div class="dock-wrap">
   <nav class="dock">
-    <a href="data.html" class="dock-item">
-      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/><path d="M2 12h20"/><circle cx="12" cy="12" r="10"/></svg></span>
-      <span class="d-label">Data</span>
+    <a href="{{ url_for('data_page') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>
+      <span class="d-label">Home</span>
     </a>
-    <a href="airtime.html" class="dock-item">
+    <a href="{{ url_for('airtime_page') }}" class="dock-item">
       <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 6h6M9 10h6"/></svg></span>
       <span class="d-label">Airtime</span>
     </a>
-    <a href="website.html" class="dock-item">
+    <a href="{{ url_for('bots') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="14" r="2.5"/><path d="M3.5 19c.6-2.4 2.4-4 4.5-4s3.9 1.6 4.5 4"/></svg></span>
+      <span class="d-label">Bots</span>
+    </a>
+    <a href="{{ url_for('website') }}" class="dock-item">
       <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>
       <span class="d-label">Website</span>
     </a>
-    <a href="bots.html" class="dock-item">
-      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="14" r="2.5"/><path d="M3.5 19c.6-2.4 2.4-4 4.5-4s3.9 1.6 4.5 4"/></svg></span>
-      <span class="d-label">Bots</span>
+    <a href="{{ url_for('dashboard') }}" class="dock-item active">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+      <span class="d-label">Dashboard</span>
     </a>
   </nav>
 </div>

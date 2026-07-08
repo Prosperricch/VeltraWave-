@@ -1,0 +1,612 @@
+[
+  {
+    "plan_name": "500MB",
+    "plan_id": "1",
+    "network": "MTN",
+    "plan_type": "SME",
+    "duration": "7 Days",
+    "cost_price": 225,
+    "selling_price": 300,
+    "profit": 75
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "2",
+    "network": "MTN",
+    "plan_type": "SME",
+    "duration": "7 Days",
+    "cost_price": 450,
+    "selling_price": 600,
+    "profit": 150
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "3",
+    "network": "MTN",
+    "plan_type": "SME",
+    "duration": "7 Days",
+    "cost_price": 900,
+    "selling_price": 950,
+    "profit": 50
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "4",
+    "network": "MTN",
+    "plan_type": "SME",
+    "duration": "7 Days",
+    "cost_price": 1350,
+    "selling_price": 1450,
+    "profit": 100
+  },
+  {
+    "plan_name": "5GB",
+    "plan_id": "5",
+    "network": "MTN",
+    "plan_type": "SME",
+    "duration": "30 Days",
+    "cost_price": 2250,
+    "selling_price": 2400,
+    "profit": 150
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "6",
+    "network": "MTN",
+    "plan_type": "SME",
+    "duration": "30 Days",
+    "cost_price": 4500,
+    "selling_price": 5000,
+    "profit": 500
+  },
+  {
+    "plan_name": "500MB",
+    "plan_id": "50",
+    "network": "MTN",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 275,
+    "selling_price": 350,
+    "profit": 75
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "51",
+    "network": "MTN",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 550,
+    "selling_price": 650,
+    "profit": 100
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "52",
+    "network": "MTN",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1100,
+    "selling_price": 1250,
+    "profit": 150
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "53",
+    "network": "MTN",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1650,
+    "selling_price": 1800,
+    "profit": 150
+  },
+  {
+    "plan_name": "5GB",
+    "plan_id": "54",
+    "network": "MTN",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 2750,
+    "selling_price": 3000,
+    "profit": 250
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "55",
+    "network": "MTN",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 5500,
+    "selling_price": 5800,
+    "profit": 300
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "105",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "2 Days",
+    "cost_price": 800,
+    "selling_price": 850,
+    "profit": 50
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "108",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "7 Days",
+    "cost_price": 800,
+    "selling_price": 850,
+    "profit": 50
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "109",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1550,
+    "selling_price": 1700,
+    "profit": 150
+  },
+  {
+    "plan_name": "3.5GB",
+    "plan_id": "110",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 2500,
+    "selling_price": 2700,
+    "profit": 200
+  },
+  {
+    "plan_name": "7GB",
+    "plan_id": "111",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 3500,
+    "selling_price": 3700,
+    "profit": 200
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "112",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 4500,
+    "selling_price": 5000,
+    "profit": 500
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "119",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "1 Day",
+    "cost_price": 300,
+    "selling_price": 400,
+    "profit": 100
+  },
+  {
+    "plan_name": "2.5GB",
+    "plan_id": "120",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "1 Day",
+    "cost_price": 600,
+    "selling_price": 700,
+    "profit": 100
+  },
+  {
+    "plan_name": "4GB",
+    "plan_id": "121",
+    "network": "MTN",
+    "plan_type": "GIFTING",
+    "duration": "2 Days",
+    "cost_price": 1250,
+    "selling_price": 1300,
+    "profit": 50
+  },
+  {
+    "plan_name": "1.5GB",
+    "plan_id": "36",
+    "network": "9MOBILE",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 880,
+    "selling_price": 1000,
+    "profit": 120
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "37",
+    "network": "9MOBILE",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1000,
+    "selling_price": 1150,
+    "profit": 150
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "38",
+    "network": "9MOBILE",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1300,
+    "selling_price": 1500,
+    "profit": 200
+  },
+  {
+    "plan_name": "4.5GB",
+    "plan_id": "39",
+    "network": "9MOBILE",
+    "plan_type": "GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1750,
+    "selling_price": 2000,
+    "profit": 250
+  },
+  {
+    "plan_name": "500MB",
+    "plan_id": "72",
+    "network": "9MOBILE",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 90,
+    "selling_price": 150,
+    "profit": 60
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "73",
+    "network": "9MOBILE",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 170,
+    "selling_price": 250,
+    "profit": 80
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "74",
+    "network": "9MOBILE",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 340,
+    "selling_price": 450,
+    "profit": 110
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "75",
+    "network": "9MOBILE",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 510,
+    "selling_price": 650,
+    "profit": 140
+  },
+  {
+    "plan_name": "5GB",
+    "plan_id": "76",
+    "network": "9MOBILE",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 850,
+    "selling_price": 1000,
+    "profit": 150
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "77",
+    "network": "9MOBILE",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1700,
+    "selling_price": 2000,
+    "profit": 300
+  },
+  {
+    "plan_name": "100MB",
+    "plan_id": "71",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 100,
+    "selling_price": 150,
+    "profit": 50
+  },
+  {
+    "plan_name": "300MB",
+    "plan_id": "70",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 300,
+    "selling_price": 400,
+    "profit": 100
+  },
+  {
+    "plan_name": "500MB",
+    "plan_id": "56",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 500,
+    "selling_price": 600,
+    "profit": 100
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "49",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "7 Days",
+    "cost_price": 800,
+    "selling_price": 900,
+    "profit": 100
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "85",
+    "network": "AIRTEL",
+    "plan_type": "GIFTING Awoof",
+    "duration": "3 Days",
+    "cost_price": 450,
+    "selling_price": 550,
+    "profit": 100
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "48",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1500,
+    "selling_price": 1700,
+    "profit": 200
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "86",
+    "network": "AIRTEL",
+    "plan_type": "GIFTING Awoof",
+    "duration": "2 Days",
+    "cost_price": 650,
+    "selling_price": 750,
+    "profit": 100
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "47",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 2000,
+    "selling_price": 2200,
+    "profit": 200
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "87",
+    "network": "AIRTEL",
+    "plan_type": "GIFTING Awoof",
+    "duration": "2 Days",
+    "cost_price": 1150,
+    "selling_price": 1300,
+    "profit": 150
+  },
+  {
+    "plan_name": "4GB",
+    "plan_id": "46",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 2500,
+    "selling_price": 2700,
+    "profit": 200
+  },
+  {
+    "plan_name": "7GB",
+    "plan_id": "88",
+    "network": "AIRTEL",
+    "plan_type": "GIFTING Awoof",
+    "duration": "30 Days",
+    "cost_price": 2150,
+    "selling_price": 2400,
+    "profit": 250
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "89",
+    "network": "AIRTEL",
+    "plan_type": "GIFTING Awoof",
+    "duration": "30 Days",
+    "cost_price": 3200,
+    "selling_price": 3500,
+    "profit": 300
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "106",
+    "network": "AIRTEL",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 4000,
+    "selling_price": 4300,
+    "profit": 300
+  },
+  {
+    "plan_name": "200MB",
+    "plan_id": "57",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 100,
+    "selling_price": 150,
+    "profit": 50
+  },
+  {
+    "plan_name": "500MB",
+    "plan_id": "58",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 225,
+    "selling_price": 300,
+    "profit": 75
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "59",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 450,
+    "selling_price": 550,
+    "profit": 100
+  },
+  {
+    "plan_name": "2GB",
+    "plan_id": "60",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 900,
+    "selling_price": 1050,
+    "profit": 150
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "61",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 1350,
+    "selling_price": 1500,
+    "profit": 150
+  },
+  {
+    "plan_name": "5GB",
+    "plan_id": "62",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 2250,
+    "selling_price": 2500,
+    "profit": 250
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "63",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "30 Days",
+    "cost_price": 4500,
+    "selling_price": 5000,
+    "profit": 500
+  },
+  {
+    "plan_name": "750MB",
+    "plan_id": "90",
+    "network": "GLO",
+    "plan_type": "GIFTING Awoof",
+    "duration": "1 Day",
+    "cost_price": 220,
+    "selling_price": 300,
+    "profit": 80
+  },
+  {
+    "plan_name": "1.5GB",
+    "plan_id": "91",
+    "network": "GLO",
+    "plan_type": "GIFTING Awoof",
+    "duration": "1 Day",
+    "cost_price": 320,
+    "selling_price": 400,
+    "profit": 80
+  },
+  {
+    "plan_name": "2.5GB",
+    "plan_id": "92",
+    "network": "GLO",
+    "plan_type": "GIFTING Awoof",
+    "duration": "2 Days",
+    "cost_price": 500,
+    "selling_price": 600,
+    "profit": 100
+  },
+  {
+    "plan_name": "10GB",
+    "plan_id": "93",
+    "network": "GLO",
+    "plan_type": "GIFTING Awoof",
+    "duration": "7 Days",
+    "cost_price": 2000,
+    "selling_price": 2300,
+    "profit": 300
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "113",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "3 Days",
+    "cost_price": 324,
+    "selling_price": 400,
+    "profit": 76
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "114",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "3 Days",
+    "cost_price": 972,
+    "selling_price": 1100,
+    "profit": 128
+  },
+  {
+    "plan_name": "5GB",
+    "plan_id": "115",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "3 Days",
+    "cost_price": 1620,
+    "selling_price": 1800,
+    "profit": 180
+  },
+  {
+    "plan_name": "1GB",
+    "plan_id": "116",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "7 Days",
+    "cost_price": 360,
+    "selling_price": 450,
+    "profit": 90
+  },
+  {
+    "plan_name": "3GB",
+    "plan_id": "117",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "7 Days",
+    "cost_price": 1080,
+    "selling_price": 1200,
+    "profit": 120
+  },
+  {
+    "plan_name": "5GB",
+    "plan_id": "118",
+    "network": "GLO",
+    "plan_type": "COOPERATE GIFTING",
+    "duration": "7 Days",
+    "cost_price": 1800,
+    "selling_price": 2000,
+    "profit": 200
+  }
+]

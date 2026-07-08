@@ -304,6 +304,11 @@ def website():
     return render_template("website.html")
 
 
+@app.route("/prices_page", methods=["GET"])
+def prices_page():
+    return render_template("prices.html")
+
+
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
     return render_template("dashboard.html")

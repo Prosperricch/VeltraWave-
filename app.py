@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import os
+import threading
 import time
 import uuid
 
@@ -50,6 +51,68 @@ if _missing_env:
         "Missing required environment variable(s): " + ", ".join(_missing_env) +
         ". Set these in Render's Environment tab (or a local .env file) before starting the app."
     )
+
+# ============================================================================
+# Keep-alive (avoid Render free-tier "spin down after inactivity")
+#
+# Render's free web services sleep after ~15 minutes without an incoming
+# HTTP request. This background thread pings our own /healthz endpoint
+# every KEEP_ALIVE_INTERVAL_SECONDS so the service always looks "active".
+#
+# Notes / caveats (read before relying on this):
+#  - RENDER_EXTERNAL_URL is set automatically by Render for every web
+#    service, so this is a no-op locally (nothing to ping) and safe to
+#    leave in the code.
+#  - If you run gunicorn with more than 1 worker, each worker process will
+#    start its own keep-alive thread, so you'll get N pings per interval
+#    instead of 1. That's harmless (just a few extra requests) but if you
+#    want it perfectly clean, either run a single worker
+#    (`gunicorn app:app --workers 1`) or use an external uptime monitor
+#    instead (see below).
+#  - This trick does NOT bypass Render's policy — it just means the
+#    service genuinely receives regular traffic. Render can still change
+#    this behavior at any time. A more robust, zero-maintenance
+#    alternative is a free external uptime pinger such as
+#    https://cron-job.org or https://uptimerobot.com hitting
+#    https://<your-app>.onrender.com/healthz every 10 minutes — that also
+#    works even if you scale to multiple instances.
+# ============================================================================
+RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL")
+KEEP_ALIVE_INTERVAL_SECONDS = int(os.environ.get("KEEP_ALIVE_INTERVAL_SECONDS", 600))  # 10 min
+
+
+def _keep_alive_loop():
+    if not RENDER_EXTERNAL_URL:
+        print("⏭️  Keep-alive disabled (RENDER_EXTERNAL_URL not set — not running on Render).")
+        return
+
+    ping_url = RENDER_EXTERNAL_URL.rstrip("/") + "/healthz"
+    # Small initial delay so the server has fully booted before the first ping.
+    time.sleep(30)
+    while True:
+        try:
+            resp = requests.get(ping_url, timeout=10)
+            print(f"💓 Keep-alive ping → {ping_url} ({resp.status_code})")
+        except Exception as e:
+            print(f"⚠️  Keep-alive ping failed: {e}")
+        time.sleep(KEEP_ALIVE_INTERVAL_SECONDS)
+
+
+def _start_keep_alive_thread():
+    thread = threading.Thread(target=_keep_alive_loop, daemon=True)
+    thread.start()
+
+
+# Start it once at import time (works whether launched via `python app.py`
+# or via `gunicorn app:app`).
+_start_keep_alive_thread()
+
+
+@app.route("/healthz", methods=["GET"])
+def healthz():
+    """Lightweight health/keep-alive endpoint. No side effects, no auth."""
+    return {"status": "ok"}, 200
+
 
 # ============================================================================
 # Airtime discount config

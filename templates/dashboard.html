@@ -155,6 +155,33 @@
   .svc-tile h3{ margin:0; font-size:16px; font-weight:700; }
   .svc-tile p{ margin:0; font-size:12px; line-height:1.4; color:rgba(21,18,48,0.6); }
 
+  /* Prices tile gets its own accent + spans full width as the 5th tile */
+  .svc-tile.prices{
+    grid-column: 1 / -1;
+    flex-direction:row;
+    align-items:center;
+    gap:14px;
+  }
+  .svc-tile.prices .svc-icon{
+    background:linear-gradient(135deg, #ff9f68, #e85b3f);
+    flex-shrink:0;
+  }
+  .svc-tile.prices .svc-txt h3{ margin:0 0 2px 0; }
+  .svc-tile.prices .svc-txt p{ margin:0; }
+  .svc-tile.prices .svc-badge{
+    margin-left:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:#0f8f57;
+    background:rgba(34,197,94,0.14);
+    padding:5px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+
   /* ---------- BOTTOM DOCK (cards, each -> a page) ---------- */
   .dock-wrap{
     position:fixed;
@@ -167,8 +194,8 @@
   }
   .dock{
     display:flex;
-    gap:8px;
-    padding:10px;
+    gap:6px;
+    padding:10px 6px;
     border-radius:24px;
     background:var(--glass-bg);
     border:1px solid var(--glass-border);
@@ -182,19 +209,20 @@
     flex-direction:column;
     align-items:center;
     gap:5px;
-    padding:9px 4px 8px;
+    padding:9px 2px 8px;
     border-radius:16px;
     text-decoration:none;
     color:rgba(21,18,48,0.55);
     transition:transform 160ms ease, background 160ms ease, color 160ms ease;
   }
   .dock-item .d-icon{
-    width:26px; height:26px;
+    width:24px; height:24px;
     display:flex; align-items:center; justify-content:center;
   }
-  .dock-item .d-icon svg{ width:20px; height:20px; }
+  .dock-item .d-icon svg{ width:19px; height:19px; }
   .dock-item span.d-label{
-    font-size:10px; font-weight:600; letter-spacing:0.01em;
+    font-size:9.5px; font-weight:600; letter-spacing:0.01em;
+    white-space:nowrap;
   }
   .dock-item.active{
     background:linear-gradient(135deg, var(--purple-1), var(--purple-2));
@@ -260,6 +288,17 @@
         <p>Request a custom build</p>
       </a>
 
+      <a href="{{ url_for('prices_page') }}" class="svc-tile prices">
+        <div class="svc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5" fill="#fff" stroke="none"/></svg>
+        </div>
+        <div class="svc-txt">
+          <h3>Prices</h3>
+          <p>See how much you save vs other providers</p>
+        </div>
+        <span class="svc-badge">Compare</span>
+      </a>
+
     </div>
   </section>
 
@@ -275,6 +314,10 @@
     <a href="{{ url_for('airtime_page') }}" class="dock-item">
       <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 6h6M9 10h6"/></svg></span>
       <span class="d-label">Airtime</span>
+    </a>
+    <a href="{{ url_for('prices_page') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>
+      <span class="d-label">Prices</span>
     </a>
     <a href="{{ url_for('website') }}" class="dock-item">
       <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>

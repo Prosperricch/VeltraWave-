@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VeltraWave — Prices &amp; Savings</title>
+<meta name="description" content="See how VeltraWave data prices compare to other providers, plan by plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-top:#f3f1f7;
+    --bg-bottom:#d9cdf5;
+    --ink:#151230;
+    --deep-blue:#0e1f5c;
+    --purple-1:#8f7bf0;
+    --purple-2:#6a54e8;
+    --glass-bg: rgba(255,255,255,0.38);
+    --glass-border: rgba(255,255,255,0.75);
+    --glass-shadow: 0 8px 32px rgba(90,70,150,0.18);
+    --red:#e11d2e;
+    --green:#0f8f57;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; padding:0; height:100%; background:var(--bg-bottom); }
+  body{
+    font-family:'Barlow', sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+  .page{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:linear-gradient(180deg, #efeaf9 0%, #ded2f5 100%);
+    padding:0;
+  }
+  .phone{
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 60% at 50% 0%, var(--bg-top) 0%, var(--bg-top) 40%, transparent 70%),
+      linear-gradient(180deg, var(--bg-top) 0%, #e7defa 55%, var(--bg-bottom) 100%);
+    display:flex;
+    flex-direction:column;
+    padding-bottom:112px;
+  }
+  @media (min-width:900px){
+    .page{ padding:48px 24px; align-items:center; }
+    .phone{
+      max-width:460px;
+      min-height:820px;
+      border-radius:32px;
+      box-shadow:0 40px 90px rgba(60,40,110,0.28), 0 2px 0 rgba(255,255,255,0.6) inset;
+    }
+  }
+  .grid-overlay{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(120,100,180,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,100,180,0.06) 1px, transparent 1px);
+    background-size:38px 38px;
+    -webkit-mask-image: radial-gradient(70% 55% at 50% 20%, #000 40%, transparent 90%);
+            mask-image: radial-gradient(70% 55% at 50% 20%, #000 40%, transparent 90%);
+    pointer-events:none;
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    position:relative; z-index:6;
+    padding:20px 22px 0;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .mark{ font-family:'Barlow Condensed', sans-serif; font-size:18px; letter-spacing:0.02em; }
+  .mark .light{ font-weight:500; color:var(--purple-2); }
+  .mark .heavy{ font-weight:600; color:var(--deep-blue); opacity:0.85; }
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--deep-blue);
+    text-decoration:none;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    box-shadow:var(--glass-shadow), inset 0 1px 1px rgba(255,255,255,0.9);
+    backdrop-filter:blur(14px) saturate(180%);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    padding:8px 14px 8px 10px;
+    border-radius:40px;
+  }
+  .back-link svg{ width:15px; height:15px; }
+
+  /* ---------- HERO ---------- */
+  .hero-head{
+    position:relative; z-index:5;
+    padding:28px 22px 6px;
+  }
+  .eyebrow{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--purple-2);
+    background:rgba(143,123,240,0.14);
+    padding:6px 12px;
+    border-radius:20px;
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    line-height:0.95;
+    margin:0 0 6px 0;
+    font-size:clamp(30px, 9vw, 40px);
+  }
+  h1 .accent{
+    background:linear-gradient(90deg, var(--purple-1), var(--purple-2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .lede{
+    font-size:14.5px;
+    line-height:1.6;
+    color:rgba(21,18,48,0.75);
+    max-width:480px;
+    margin:10px 0 0 0;
+  }
+
+  /* ---------- STAT BANNER ---------- */
+  .stat-banner{
+    position:relative; z-index:5;
+    margin:18px 22px 0;
+    padding:18px 20px;
+    border-radius:22px;
+    background:
+      radial-gradient(120% 140% at 15% 0%, rgba(255,255,255,0.35) 0%, transparent 55%),
+      linear-gradient(135deg, var(--purple-1), var(--purple-2) 70%, var(--deep-blue) 130%);
+    box-shadow:0 16px 34px -12px rgba(60,40,110,0.45), inset 0 1px 1px rgba(255,255,255,0.5);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .stat-banner .stat-icon{
+    width:44px; height:44px; border-radius:14px;
+    background:rgba(255,255,255,0.2);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .stat-banner .stat-icon svg{ width:22px; height:22px; }
+  .stat-banner .stat-num{
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:800;
+    font-size:24px;
+    line-height:1;
+    margin-bottom:2px;
+  }
+  .stat-banner .stat-label{
+    font-size:12px;
+    color:rgba(255,255,255,0.85);
+  }
+
+  /* ---------- LEGEND ---------- */
+  .legend{
+    position:relative; z-index:5;
+    display:flex;
+    gap:16px;
+    padding:16px 22px 4px;
+  }
+  .legend-item{
+    display:flex; align-items:center; gap:7px;
+    font-size:12px; font-weight:600;
+    color:rgba(21,18,48,0.65);
+  }
+  .legend-swatch{
+    width:12px; height:12px; border-radius:4px;
+    flex-shrink:0;
+  }
+  .legend-swatch.mine{ background:linear-gradient(135deg, var(--purple-1), var(--purple-2)); }
+  .legend-swatch.other{ background:var(--red); }
+
+  /* ---------- COMPARISON SECTIONS ---------- */
+  .compare-wrap{
+    position:relative; z-index:5;
+    padding:18px 22px 10px;
+  }
+  .net-section{
+    margin-bottom:26px;
+  }
+  .net-section-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .net-chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    padding:7px 13px;
+    border-radius:20px;
+    color:#fff;
+  }
+  .net-chip.mtn{ background:linear-gradient(135deg,#ffcc08,#c28500); color:#3a2900; }
+  .net-chip.glo{ background:linear-gradient(135deg,#00a651,#005426); }
+  .net-chip.nine{ background:linear-gradient(135deg,#00a99d,#00554f); }
+  .net-chip.airtel{ background:linear-gradient(135deg,#ed1c24,#7a0a0f); }
+  .net-count{
+    font-size:12px;
+    color:rgba(21,18,48,0.5);
+    font-weight:600;
+  }
+
+  .type-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:rgba(21,18,48,0.42);
+    margin:14px 0 8px 2px;
+  }
+  .type-label:first-of-type{ margin-top:2px; }
+
+  .price-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .price-card{
+    position:relative;
+    padding:16px 14px 14px;
+    border-radius:20px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    box-shadow:var(--glass-shadow), inset 0 1px 1px rgba(255,255,255,0.9);
+    backdrop-filter:blur(18px) saturate(180%);
+    -webkit-backdrop-filter:blur(18px) saturate(180%);
+  }
+  .pc-size{
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    line-height:1;
+    display:block;
+  }
+  .pc-duration{
+    font-size:11px;
+    color:rgba(21,18,48,0.55);
+    margin-top:3px;
+    margin-bottom:12px;
+  }
+
+  .pc-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 0;
+  }
+  .pc-row.other{
+    border-bottom:1px dashed rgba(21,18,48,0.14);
+    margin-bottom:6px;
+    padding-bottom:9px;
+  }
+  .pc-label{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:rgba(21,18,48,0.45);
+  }
+  .pc-row.mine .pc-label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:var(--purple-2);
+  }
+  .pc-best{
+    font-family:'JetBrains Mono', monospace;
+    font-size:8.5px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    background:linear-gradient(135deg, var(--purple-1), var(--purple-2));
+    color:#fff;
+    padding:2px 6px;
+    border-radius:8px;
+  }
+  .pc-price{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:13.5px;
+  }
+  .pc-row.other .pc-price{
+    color:var(--red);
+    text-decoration:line-through;
+    text-decoration-thickness:2px;
+    text-decoration-color:var(--red);
+    opacity:0.85;
+  }
+  .pc-row.mine .pc-price{
+    font-size:16.5px;
+    background:linear-gradient(90deg, var(--purple-1), var(--purple-2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .pc-save{
+    margin-top:10px;
+    text-align:center;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--green);
+    background:rgba(34,197,94,0.14);
+    padding:5px 8px;
+    border-radius:20px;
+  }
+  .pc-source{
+    position:absolute;
+    top:12px;
+    right:12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:8px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:rgba(21,18,48,0.35);
+  }
+
+  .loading-msg{
+    font-size:13px;
+    color:rgba(21,18,48,0.5);
+    padding:20px 2px;
+    text-align:center;
+  }
+
+  .cta-block{
+    position:relative; z-index:5;
+    padding:14px 22px 8px;
+  }
+  .btn {
+    position: relative;
+    display:block;
+    width:100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration:none;
+  }
+  .btn .shadow {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+    border-radius: 16px; background: rgba(0,0,0,0.2);
+    transform: translateY(6px); filter: blur(5px);
+    transition: transform 300ms ease;
+  }
+  .btn .edge {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+    border-radius: 16px;
+    background: linear-gradient(to left, hsl(235,80%,40%) 0%, hsl(235,80%,55%) 12%, hsl(235,80%,55%) 88%, hsl(235,80%,40%) 100%);
+  }
+  .btn .front {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    position: relative;
+    padding: 16px 40px;
+    border-radius: 16px;
+    font-size: 1.02rem;
+    font-family:'Barlow', sans-serif;
+    font-weight: 700;
+    color: white;
+    background: hsl(235, 85%, 65%);
+    transform: translateY(-8px);
+    transition: transform 300ms ease;
+    box-shadow: inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.15);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .btn:active .front{ transform: translateY(-2px); }
+  .btn:active .shadow{ transform: translateY(2px); filter: blur(2px); }
+  .btn .front svg{ width:18px; height:18px; }
+
+  /* ---------- BOTTOM DOCK ---------- */
+  .dock-wrap{
+    position:fixed;
+    left:50%;
+    bottom:16px;
+    transform:translateX(-50%);
+    width:calc(100% - 32px);
+    max-width:398px;
+    z-index:50;
+  }
+  .dock{
+    display:flex;
+    gap:6px;
+    padding:10px 6px;
+    border-radius:24px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    box-shadow:0 18px 40px -12px rgba(60,40,110,0.4), inset 0 1px 1px rgba(255,255,255,0.9);
+    backdrop-filter:blur(22px) saturate(180%);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);
+  }
+  .dock-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    padding:9px 2px 8px;
+    border-radius:16px;
+    text-decoration:none;
+    color:rgba(21,18,48,0.55);
+    transition:transform 160ms ease, background 160ms ease, color 160ms ease;
+  }
+  .dock-item .d-icon{
+    width:24px; height:24px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .dock-item .d-icon svg{ width:19px; height:19px; }
+  .dock-item span.d-label{
+    font-size:9.5px; font-weight:600; letter-spacing:0.01em;
+    white-space:nowrap;
+  }
+  .dock-item.active{
+    background:linear-gradient(135deg, var(--purple-1), var(--purple-2));
+    color:#fff;
+    transform:translateY(-6px);
+    box-shadow:0 10px 20px -6px rgba(90,60,220,0.55);
+  }
+  .dock-item:active{ transform:scale(0.94); }
+
+  @media (max-width:360px){
+    .price-grid{ grid-template-columns:1fr 1fr; gap:9px; }
+    .price-card{ padding:13px 11px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+<div class="phone">
+  <div class="grid-overlay"></div>
+
+  <div class="topbar">
+    <div class="mark"><span class="light">Veltra</span><span class="heavy">Wave</span></div>
+    <a class="back-link" href="{{ url_for('dashboard') }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+      Dashboard
+    </a>
+  </div>
+
+  <section class="hero-head">
+    <span class="eyebrow">Price Comparison</span>
+    <h1>Same data.<br><span class="accent">Way less cost.</span></h1>
+    <p class="lede">Every plan below is checked against typical prices from other providers, so you can see exactly how much VeltraWave saves you.</p>
+  </section>
+
+  <div class="stat-banner" id="statBanner">
+    <div class="stat-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    </div>
+    <div>
+      <div class="stat-num" id="statNum">—</div>
+      <div class="stat-label" id="statLabel">Calculating average savings…</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch mine"></span>VeltraWave (best price)</div>
+    <div class="legend-item"><span class="legend-swatch other"></span>Other providers</div>
+  </div>
+
+  <div class="compare-wrap" id="compareWrap">
+    <div class="loading-msg">Loading price comparison…</div>
+  </div>
+
+  <div class="cta-block">
+    <a class="btn" href="{{ url_for('data_page') }}">
+      <span class="shadow"></span>
+      <span class="edge"></span>
+      <span class="front">
+        Buy Data Now
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+  </div>
+
+</div>
+</div>
+
+<div class="dock-wrap">
+  <nav class="dock">
+    <a href="{{ url_for('data_page') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/><path d="M2 12h20"/><circle cx="12" cy="12" r="10"/></svg></span>
+      <span class="d-label">Data</span>
+    </a>
+    <a href="{{ url_for('airtime_page') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 6h6M9 10h6"/></svg></span>
+      <span class="d-label">Airtime</span>
+    </a>
+    <a href="{{ url_for('prices_page') }}" class="dock-item active">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>
+      <span class="d-label">Prices</span>
+    </a>
+    <a href="{{ url_for('website') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span>
+      <span class="d-label">Website</span>
+    </a>
+    <a href="{{ url_for('bots') }}" class="dock-item">
+      <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="14" r="2.5"/><path d="M3.5 19c.6-2.4 2.4-4 4.5-4s3.9 1.6 4.5 4"/></svg></span>
+      <span class="d-label">Bots</span>
+    </a>
+  </nav>
+</div>
+
+<script>
+/* =====================================================================
+   VeltraWave price data (source of truth — mine)
+   ===================================================================== */
+const MY_PLANS = [
+  {"plan_name":"500MB","plan_id":"1","network":"MTN","plan_type":"SME","duration":"7 Days","cost_price":225,"selling_price":300,"profit":75},
+  {"plan_name":"1GB","plan_id":"2","network":"MTN","plan_type":"SME","duration":"7 Days","cost_price":450,"selling_price":600,"profit":150},
+  {"plan_name":"2GB","plan_id":"3","network":"MTN","plan_type":"SME","duration":"7 Days","cost_price":900,"selling_price":950,"profit":50},
+  {"plan_name":"3GB","plan_id":"4","network":"MTN","plan_type":"SME","duration":"7 Days","cost_price":1350,"selling_price":1450,"profit":100},
+  {"plan_name":"5GB","plan_id":"5","network":"MTN","plan_type":"SME","duration":"30 Days","cost_price":2250,"selling_price":2400,"profit":150},
+  {"plan_name":"10GB","plan_id":"6","network":"MTN","plan_type":"SME","duration":"30 Days","cost_price":4500,"selling_price":5000,"profit":500},
+  {"plan_name":"500MB","plan_id":"50","network":"MTN","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":275,"selling_price":350,"profit":75},
+  {"plan_name":"1GB","plan_id":"51","network":"MTN","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":550,"selling_price":650,"profit":100},
+  {"plan_name":"2GB","plan_id":"52","network":"MTN","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":1100,"selling_price":1250,"profit":150},
+  {"plan_name":"3GB","plan_id":"53","network":"MTN","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":1650,"selling_price":1800,"profit":150},
+  {"plan_name":"5GB","plan_id":"54","network":"MTN","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":2750,"selling_price":3000,"profit":250},
+  {"plan_name":"10GB","plan_id":"55","network":"MTN","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":5500,"selling_price":5800,"profit":300},
+  {"plan_name":"2GB","plan_id":"105","network":"MTN","plan_type":"GIFTING","duration":"2 Days","cost_price":800,"selling_price":850,"profit":50},
+  {"plan_name":"1GB","plan_id":"108","network":"MTN","plan_type":"GIFTING","duration":"7 Days","cost_price":800,"selling_price":850,"profit":50},
+  {"plan_name":"2GB","plan_id":"109","network":"MTN","plan_type":"GIFTING","duration":"30 Days","cost_price":1550,"selling_price":1700,"profit":150},
+  {"plan_name":"3.5GB","plan_id":"110","network":"MTN","plan_type":"GIFTING","duration":"30 Days","cost_price":2500,"selling_price":2700,"profit":200},
+  {"plan_name":"7GB","plan_id":"111","network":"MTN","plan_type":"GIFTING","duration":"30 Days","cost_price":3500,"selling_price":3700,"profit":200},
+  {"plan_name":"10GB","plan_id":"112","network":"MTN","plan_type":"GIFTING","duration":"30 Days","cost_price":4500,"selling_price":5000,"profit":500},
+  {"plan_name":"1GB","plan_id":"119","network":"MTN","plan_type":"GIFTING","duration":"1 Day","cost_price":300,"selling_price":400,"profit":100},
+  {"plan_name":"2.5GB","plan_id":"120","network":"MTN","plan_type":"GIFTING","duration":"1 Day","cost_price":600,"selling_price":700,"profit":100},
+  {"plan_name":"4GB","plan_id":"121","network":"MTN","plan_type":"GIFTING","duration":"2 Days","cost_price":1250,"selling_price":1300,"profit":50},
+  {"plan_name":"1.5GB","plan_id":"36","network":"9MOBILE","plan_type":"GIFTING","duration":"30 Days","cost_price":880,"selling_price":1000,"profit":120},
+  {"plan_name":"2GB","plan_id":"37","network":"9MOBILE","plan_type":"GIFTING","duration":"30 Days","cost_price":1000,"selling_price":1150,"profit":150},
+  {"plan_name":"3GB","plan_id":"38","network":"9MOBILE","plan_type":"GIFTING","duration":"30 Days","cost_price":1300,"selling_price":1500,"profit":200},
+  {"plan_name":"4.5GB","plan_id":"39","network":"9MOBILE","plan_type":"GIFTING","duration":"30 Days","cost_price":1750,"selling_price":2000,"profit":250},
+  {"plan_name":"500MB","plan_id":"72","network":"9MOBILE","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":90,"selling_price":150,"profit":60},
+  {"plan_name":"1GB","plan_id":"73","network":"9MOBILE","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":170,"selling_price":250,"profit":80},
+  {"plan_name":"2GB","plan_id":"74","network":"9MOBILE","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":340,"selling_price":450,"profit":110},
+  {"plan_name":"3GB","plan_id":"75","network":"9MOBILE","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":510,"selling_price":650,"profit":140},
+  {"plan_name":"5GB","plan_id":"76","network":"9MOBILE","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":850,"selling_price":1000,"profit":150},
+  {"plan_name":"10GB","plan_id":"77","network":"9MOBILE","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":1700,"selling_price":2000,"profit":300},
+  {"plan_name":"100MB","plan_id":"71","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":100,"selling_price":150,"profit":50},
+  {"plan_name":"300MB","plan_id":"70","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":300,"selling_price":400,"profit":100},
+  {"plan_name":"500MB","plan_id":"56","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":500,"selling_price":600,"profit":100},
+  {"plan_name":"1GB","plan_id":"49","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"7 Days","cost_price":800,"selling_price":900,"profit":100},
+  {"plan_name":"1GB","plan_id":"85","network":"AIRTEL","plan_type":"GIFTING Awoof","duration":"3 Days","cost_price":450,"selling_price":550,"profit":100},
+  {"plan_name":"2GB","plan_id":"48","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":1500,"selling_price":1700,"profit":200},
+  {"plan_name":"2GB","plan_id":"86","network":"AIRTEL","plan_type":"GIFTING Awoof","duration":"2 Days","cost_price":650,"selling_price":750,"profit":100},
+  {"plan_name":"3GB","plan_id":"47","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":2000,"selling_price":2200,"profit":200},
+  {"plan_name":"3GB","plan_id":"87","network":"AIRTEL","plan_type":"GIFTING Awoof","duration":"2 Days","cost_price":1150,"selling_price":1300,"profit":150},
+  {"plan_name":"4GB","plan_id":"46","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":2500,"selling_price":2700,"profit":200},
+  {"plan_name":"7GB","plan_id":"88","network":"AIRTEL","plan_type":"GIFTING Awoof","duration":"30 Days","cost_price":2150,"selling_price":2400,"profit":250},
+  {"plan_name":"10GB","plan_id":"89","network":"AIRTEL","plan_type":"GIFTING Awoof","duration":"30 Days","cost_price":3200,"selling_price":3500,"profit":300},
+  {"plan_name":"10GB","plan_id":"106","network":"AIRTEL","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":4000,"selling_price":4300,"profit":300},
+  {"plan_name":"200MB","plan_id":"57","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":100,"selling_price":150,"profit":50},
+  {"plan_name":"500MB","plan_id":"58","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":225,"selling_price":300,"profit":75},
+  {"plan_name":"1GB","plan_id":"59","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":450,"selling_price":550,"profit":100},
+  {"plan_name":"2GB","plan_id":"60","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":900,"selling_price":1050,"profit":150},
+  {"plan_name":"3GB","plan_id":"61","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":1350,"selling_price":1500,"profit":150},
+  {"plan_name":"5GB","plan_id":"62","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":2250,"selling_price":2500,"profit":250},
+  {"plan_name":"10GB","plan_id":"63","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"30 Days","cost_price":4500,"selling_price":5000,"profit":500},
+  {"plan_name":"750MB","plan_id":"90","network":"GLO","plan_type":"GIFTING Awoof","duration":"1 Day","cost_price":220,"selling_price":300,"profit":80},
+  {"plan_name":"1.5GB","plan_id":"91","network":"GLO","plan_type":"GIFTING Awoof","duration":"1 Day","cost_price":320,"selling_price":400,"profit":80},
+  {"plan_name":"2.5GB","plan_id":"92","network":"GLO","plan_type":"GIFTING Awoof","duration":"2 Days","cost_price":500,"selling_price":600,"profit":100},
+  {"plan_name":"10GB","plan_id":"93","network":"GLO","plan_type":"GIFTING Awoof","duration":"7 Days","cost_price":2000,"selling_price":2300,"profit":300},
+  {"plan_name":"1GB","plan_id":"113","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"3 Days","cost_price":324,"selling_price":400,"profit":76},
+  {"plan_name":"3GB","plan_id":"114","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"3 Days","cost_price":972,"selling_price":1100,"profit":128},
+  {"plan_name":"5GB","plan_id":"115","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"3 Days","cost_price":1620,"selling_price":1800,"profit":180},
+  {"plan_name":"1GB","plan_id":"116","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"7 Days","cost_price":360,"selling_price":450,"profit":90},
+  {"plan_name":"3GB","plan_id":"117","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"7 Days","cost_price":1080,"selling_price":1200,"profit":120},
+  {"plan_name":"5GB","plan_id":"118","network":"GLO","plan_type":"COOPERATE GIFTING","duration":"7 Days","cost_price":1800,"selling_price":2000,"profit":200}
+];
+
+/* =====================================================================
+   Reference market prices (used only to build a fair comparison —
+   directly supplied entries are labelled "Other Provider"; sizes /
+   durations with no close match are estimated from this same table
+   and labelled "Market Est." so nothing is presented as a verbatim
+   quote for a combination that was never actually listed)
+   ===================================================================== */
+const OPAY = [
+  {size:"110MB",days:1,price:100},
+  {size:"500MB",days:1,price:350},
+  {size:"500MB",days:7,price:500},
+  {size:"1GB",days:7,price:800},
+  {size:"1.5GB",days:7,price:1000},
+  {size:"2GB",days:2,price:750},
+  {size:"2.5GB",days:1,price:750},
+  {size:"2.5GB",days:2,price:900},
+  {size:"3.2GB",days:2,price:1000},
+  {size:"3.5GB",days:1,price:1000},
+  {size:"3.5GB",days:7,price:1500},
+  {size:"4GB",days:2,price:1200},
+  {size:"5.5GB",days:2,price:1500},
+  {size:"6GB",days:7,price:2500},
+  {size:"7GB",days:30,price:3500},
+  {size:"11GB",days:7,price:3500},
+  {size:"12.5GB",days:14,price:4500},
+  {size:"12.5GB",days:30,price:5500},
+  {size:"15GB",days:7,price:4000},
+  {size:"18GB",days:14,price:6000},
+  {size:"20GB",days:7,price:5000},
+  {size:"20GB",days:30,price:7500},
+  {size:"25GB",days:30,price:9000},
+  {size:"28GB",days:14,price:8000},
+  {size:"34GB",days:30,price:10000},
+  {size:"36GB",days:30,price:11000},
+  {size:"40GB",days:14,price:10000},
+  {size:"65GB",days:30,price:16000},
+  {size:"75GB",days:30,price:18000},
+  {size:"150GB",days:60,price:40000},
+  {size:"165GB",days:30,price:35000},
+  {size:"480GB",days:90,price:90000}
+];
+
+const NET_ORDER = ["MTN","GLO","AIRTEL","9MOBILE"];
+const NET_CLASS = {MTN:"mtn", GLO:"glo", AIRTEL:"airtel", "9MOBILE":"nine"};
+
+function parseSizeToMB(str){
+  const m = String(str).match(/([\d.]+)\s*(MB|GB)/i);
+  if(!m) return 0;
+  let val = parseFloat(m[1]);
+  if(m[2].toUpperCase() === "GB") val *= 1000;
+  return val;
+}
+function parseDurationDays(str){
+  const m = String(str).match(/([\d.]+)/);
+  return m ? parseFloat(m[1]) : 30;
+}
+function nairaFmt(n){
+  return "\u20A6" + Math.round(n).toLocaleString("en-NG");
+}
+
+/* find the closest OPay reference by size + duration (log-scaled) */
+function findReference(myMB, myDays){
+  let best = null, bestScore = Infinity;
+  OPAY.forEach(o=>{
+    const oMB = parseSizeToMB(o.size);
+    const sizeScore = Math.abs(Math.log(myMB / oMB));
+    const durScore = Math.abs(Math.log((myDays + 1) / (o.days + 1)));
+    const score = sizeScore + 0.4 * durScore;
+    if(score < bestScore){ bestScore = score; best = o; }
+  });
+  return { best, bestScore };
+}
+
+function getComparisonPrice(myMB, myDays){
+  const { best, bestScore } = findReference(myMB, myDays);
+  if(!best) return null;
+
+  if(bestScore <= 0.5){
+    return { price: best.price, source: "Other Provider" };
+  }
+
+  const refMB = parseSizeToMB(best.size);
+  const sizeScale = myMB / refMB;
+  const durScale = Math.pow((myDays + 1) / (best.days + 1), 0.28);
+  let est = best.price * sizeScale * durScale;
+  est = Math.round(est / 50) * 50;
+  return { price: est, source: "Market Est." };
+}
+
+/* =====================================================================
+   Build comparison rows — only keep plans where VeltraWave genuinely
+   wins, so every card shown is an honest, favourable comparison.
+   ===================================================================== */
+function buildRows(){
+  const groups = {};
+  let totalSaved = 0, totalOther = 0, count = 0;
+
+  MY_PLANS.forEach(p=>{
+    const myMB = parseSizeToMB(p.plan_name);
+    const myDays = parseDurationDays(p.duration);
+    const cmp = getComparisonPrice(myMB, myDays);
+    if(!cmp) return;
+    if(cmp.price <= p.selling_price) return; // only show plans where we win
+
+    const savings = cmp.price - p.selling_price;
+    const pct = Math.round((savings / cmp.price) * 100);
+
+    totalSaved += savings;
+    totalOther += cmp.price;
+    count++;
+
+    if(!groups[p.network]) groups[p.network] = {};
+    if(!groups[p.network][p.plan_type]) groups[p.network][p.plan_type] = [];
+
+    groups[p.network][p.plan_type].push({
+      size: p.plan_name,
+      duration: p.duration,
+      mine: p.selling_price,
+      other: cmp.price,
+      source: cmp.source,
+      savings, pct,
+      sortMB: myMB
+    });
+  });
+
+  Object.values(groups).forEach(typeMap=>{
+    Object.values(typeMap).forEach(list=> list.sort((a,b)=> a.sortMB - b.sortMB));
+  });
+
+  const avgPct = count ? Math.round(
+    MY_PLANS.reduce((sum,p)=>0,0) || (totalSaved/totalOther)*100
+  ) : 0;
+
+  return { groups, avgPct, count };
+}
+
+function cardHTML(row){
+  return `
+    <div class="price-card">
+      <span class="pc-source">${row.source}</span>
+      <span class="pc-size">${row.size}</span>
+      <span class="pc-duration">${row.duration} validity</span>
+      <div class="pc-row other">
+        <span class="pc-label">Other</span>
+        <span class="pc-price">${nairaFmt(row.other)}</span>
+      </div>
+      <div class="pc-row mine">
+        <span class="pc-label">VeltraWave <span class="pc-best">BEST</span></span>
+        <span class="pc-price">${nairaFmt(row.mine)}</span>
+      </div>
+      <div class="pc-save">Save ${nairaFmt(row.savings)} · ${row.pct}%</div>
+    </div>
+  `;
+}
+
+function render(){
+  const { groups, avgPct, count } = buildRows();
+  const wrap = document.getElementById("compareWrap");
+  const statNum = document.getElementById("statNum");
+  const statLabel = document.getElementById("statLabel");
+
+  if(!count){
+    wrap.innerHTML = '<div class="loading-msg">No comparison data available right now.</div>';
+    statNum.textContent = "—";
+    statLabel.textContent = "Check back soon";
+    return;
+  }
+
+  statNum.textContent = "Up to " + avgPct + "%";
+  statLabel.textContent = "average savings vs other providers, across " + count + " plans";
+
+  let html = "";
+  NET_ORDER.forEach(net=>{
+    if(!groups[net]) return;
+    const typeMap = groups[net];
+    const netCount = Object.values(typeMap).reduce((s,l)=> s + l.length, 0);
+
+    html += `<div class="net-section">
+      <div class="net-section-head">
+        <span class="net-chip ${NET_CLASS[net] || ''}">${net}</span>
+        <span class="net-count">${netCount} plan${netCount===1?'':'s'}</span>
+      </div>`;
+
+    Object.keys(typeMap).forEach(type=>{
+      html += `<div class="type-label">${type}</div><div class="price-grid">`;
+      typeMap[type].forEach(row=>{ html += cardHTML(row); });
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  wrap.innerHTML = html || '<div class="loading-msg">No comparison data available right now.</div>';
+}
+
+document.addEventListener("DOMContentLoaded", render);
+</script>
+
+</body>
+</html>

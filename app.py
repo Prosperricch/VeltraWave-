@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import os
 import time
 import uuid
 
@@ -7,14 +8,48 @@ import requests
 from flask import Flask, render_template, request, jsonify
 import json
 
+# Load a local .env file when present (e.g. running on your machine). On
+# Render the real environment variables you set in the dashboard are used
+# directly, so this is a no-op there — it's purely a local-dev convenience.
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 app = Flask(__name__)
 
 email = "prosper@email.com"
-PAYMENT_TOKEN = "sk_test_569009ff0aba041feba3c14b3a3a573d0fe606dd"
-PAYMENT_URL = "https://api.paystack.co/transaction/initialize"
-PROVIDER_TOKEN ='Token 3cfedeade5a3a75342ce13245ac4de9e9b3ca0aaf86a05a5aa1447c12d7d'
-PROVIDER_URL = 'https://n3tdata.com/api/data'
-PROVIDER_URL_AIRTIME = 'https://n3tdata.com/api/topup'
+
+# ============================================================================
+# Secrets / config — pulled from environment variables (set these in Render's
+# "Environment" tab for the service). Never hardcode real tokens in source.
+#
+# PAYMENT_TOKEN  — Paystack secret key
+# PAYMENT_URL    — Paystack initialize-transaction endpoint
+# PROVIDER_TOKEN — n3tdata API token (already includes the "Token " prefix
+#                  n3tdata expects, e.g. "Token abcd1234...")
+# ============================================================================
+PAYMENT_TOKEN = os.environ.get("PAYMENT_TOKEN")
+PAYMENT_URL = os.environ.get("PAYMENT_URL", "https://api.paystack.co/transaction/initialize")
+PROVIDER_TOKEN = os.environ.get("PROVIDER_TOKEN")
+
+# n3tdata endpoints aren't secrets, so they stay as plain constants. Move
+# these to env vars too if you ever need to point at a staging provider.
+PROVIDER_URL = os.environ.get("PROVIDER_URL")
+PROVIDER_URL_AIRTIME = os.environ.get("PROVIDER_URL_AIRTIME")
+_missing_env = [
+    name for name, value in {
+        "PAYMENT_TOKEN": PAYMENT_TOKEN,
+        "PAYMENT_URL": PAYMENT_URL,
+        "PROVIDER_TOKEN": PROVIDER_TOKEN,
+    }.items() if not value
+]
+if _missing_env:
+    raise RuntimeError(
+        "Missing required environment variable(s): " + ", ".join(_missing_env) +
+        ". Set these in Render's Environment tab (or a local .env file) before starting the app."
+    )
 
 # ============================================================================
 # Airtime discount config
@@ -108,13 +143,17 @@ class PaystackError(Exception):
 def airtime_page():
     # Looks directly inside your 'templates/' folder
     return render_template("airtime.html")
+
+
 @app.route("/bots", methods=["GET"])
 def bots():
     return render_template("bots.html")
 
+
 @app.route("/website", methods=["GET"])
 def website():
     return render_template("website.html")
+
 
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
@@ -429,4 +468,9 @@ def data_page():
     return render_template("data.html", grouped_plans=grouped)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Local dev only. On Render, the start command should be:
+    #   gunicorn app:app
+    # which ignores this block entirely and never runs with debug=True.
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)

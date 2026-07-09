@@ -264,7 +264,7 @@
     font-size:clamp(17px, 5.2vw, 22px);
     line-height:1;
     display:block;
-    overflow-wrap:anywhere;
+    white-space:nowrap;
     padding-right:34px;
   }
   .pc-duration{
@@ -321,9 +321,9 @@
     font-weight:700;
     font-size:clamp(11px, 3.4vw, 13.5px);
     min-width:0;
-    overflow-wrap:anywhere;
+    white-space:nowrap;
     text-align:right;
-    flex-shrink:1;
+    flex-shrink:0;
   }
   .pc-row.other .pc-price{
     color:var(--red);
@@ -467,6 +467,26 @@
   }
   .dock-item:active{ transform:scale(0.94); }
 
+  @media (max-width:480px){
+    .pc-row.mine{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:4px;
+    }
+    .pc-row.mine .pc-price{
+      width:100%;
+      text-align:right;
+    }
+    .pc-row.other{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:2px;
+    }
+    .pc-row.other .pc-price{
+      width:100%;
+      text-align:right;
+    }
+  }
   @media (max-width:400px){
     .price-grid{ gap:8px; }
     .price-card{ padding:12px 10px 10px; }

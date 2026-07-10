@@ -128,7 +128,7 @@ def healthz():
 # same formula, but this function is the real source of truth.
 # ============================================================================
 AIRTIME_DISCOUNT_PERCENT = 2
-AIRTIME_MIN_AMOUNT = 50
+AIRTIME_MIN_AMOUNT = 100
 AIRTIME_MAX_AMOUNT = 50000
 
 

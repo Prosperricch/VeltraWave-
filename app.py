@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import os
+import re
 import sqlite3
 import threading
 import time
@@ -21,8 +22,6 @@ except ImportError:
     pass
 
 app = Flask(__name__)
-
-email = "prosper@email.com"
 
 # ============================================================================
 # Secrets / config — pulled from environment variables (set these in Render's
@@ -114,6 +113,34 @@ _start_keep_alive_thread()
 def healthz():
     """Lightweight health/keep-alive endpoint. No side effects, no auth."""
     return {"status": "ok"}, 200
+
+
+# ============================================================================
+# Per-customer placeholder email for Paystack
+#
+# Paystack's /transaction/initialize endpoint requires an "email" field, but
+# we don't collect real emails from customers — just their phone number.
+# Previously this was hardcoded to a single static address for every single
+# transaction, which is wrong (it also affects Paystack's own fraud/risk
+# scoring since it looks like the same "customer" every time).
+#
+# Instead we build a deterministic placeholder email straight from the
+# phone number they typed in, e.g. "08021234567" -> "08021234567@veltrawave.com".
+# Same phone number will always map to the same email, which is fine since
+# Paystack doesn't need it to be a real, deliverable inbox — it just needs
+# a validly-formatted, present email field.
+# ============================================================================
+EMAIL_DOMAIN = os.environ.get("CUSTOMER_EMAIL_DOMAIN", "veltrawave.com")
+
+
+def _phone_to_email(phone: str) -> str:
+    """Turn a customer's phone number into a placeholder email for Paystack."""
+    digits = re.sub(r"\D", "", phone or "")
+    if not digits:
+        # Extremely unlikely (phone is required upstream), but never send
+        # Paystack a malformed/empty local-part.
+        digits = f"customer{uuid.uuid4().hex[:8]}"
+    return f"{digits}@{EMAIL_DOMAIN}"
 
 
 # ============================================================================
@@ -255,7 +282,7 @@ def _customer_message_for_failure(provider_message: str) -> str:
             "support with your reference number and we'll sort it out.")
 
 
-def _initiate_paystack_payment(amount_naira, metadata):
+def _initiate_paystack_payment(amount_naira, metadata, customer_email):
     """Create a Paystack transaction with our own reference + callback_url.
 
     Returns (response_data, reference) on success. Raises PaystackError on
@@ -269,7 +296,7 @@ def _initiate_paystack_payment(amount_naira, metadata):
         "Content-Type": "Application/json"
     }
     payload = {
-        "email": email,
+        "email": customer_email,
         "amount": int(amount_naira) * 100,
         "reference": reference,
         "callback_url": callback_url,
@@ -345,7 +372,7 @@ def purchase_data():
     }
 
     try:
-        response_data, reference = _initiate_paystack_payment(price, metadata)
+        response_data, reference = _initiate_paystack_payment(price, metadata, _phone_to_email(phone))
     except PaystackError as e:
         return {"status": False, "message": str(e)}, 400
 
@@ -404,7 +431,7 @@ def purchase_airtime():
     }
 
     try:
-        response_data, reference = _initiate_paystack_payment(pay_amount, metadata)
+        response_data, reference = _initiate_paystack_payment(pay_amount, metadata, _phone_to_email(phone))
     except PaystackError as e:
         return {"status": False, "message": str(e)}, 400
 

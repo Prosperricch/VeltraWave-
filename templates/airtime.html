@@ -230,9 +230,9 @@
       <label>Airtime Amount</label>
       <div class="amount-field">
         <span class="ngn-prefix">₦</span>
-        <input type="number" id="airtimeAmount" inputmode="numeric" placeholder="Enter any amount" value="500" min="50" max="50000" step="50" required>
+        <input type="number" id="airtimeAmount" inputmode="numeric" placeholder="Enter any amount" value="500" min="100" max="50000" step="50" required>
       </div>
-      <div class="field-hint" id="amountHint">Min ₦50 · Max ₦50,000</div>
+      <div class="field-hint" id="amountHint">Min ₦100 · Max ₦50,000</div>
 
       <div class="chip-row" id="chipRow">
         <div class="chip" data-amount="100">₦100</div>
@@ -320,7 +320,7 @@
   // Keep this in sync with AIRTIME_DISCOUNT_PERCENT in app.py — the server
   // always recalculates the real charge, this is just for the live preview.
   const DISCOUNT_PERCENT = 2;
-  const MIN_AMOUNT = 50;
+  const MIN_AMOUNT = 100;
   const MAX_AMOUNT = 50000;
 
   const networkSel    = document.getElementById('network');
@@ -349,6 +349,52 @@
       el.classList.remove('show');
       setTimeout(() => el.remove(), 250);
     }, duration);
+  }
+
+  // ── Pending-purchase recovery ─────────────────────────────────────
+  // If someone leaves the browser mid-payment (e.g. to do a bank transfer
+  // in their banking app) and Paystack's own redirect back to us never
+  // completes, they land back on this page with no feedback. We stash the
+  // reference locally right before sending them to Paystack, then check it
+  // here on load so they always get a clear status instead of silence.
+  const PENDING_KEY = 'vw_pending_ref';
+
+  function storePendingRef(reference){
+    try { localStorage.setItem(PENDING_KEY, JSON.stringify({ reference, savedAt: Date.now() })); }
+    catch (e) {}
+  }
+  function clearPendingRef(){
+    try { localStorage.removeItem(PENDING_KEY); } catch (e) {}
+  }
+
+  async function checkPendingPurchase(){
+    let stored;
+    try { stored = JSON.parse(localStorage.getItem(PENDING_KEY) || 'null'); }
+    catch (e) { stored = null; }
+    if (!stored || !stored.reference) return;
+
+    // Ignore anything older than 24h — stale by now, not worth checking
+    if (Date.now() - stored.savedAt > 24 * 60 * 60 * 1000){
+      clearPendingRef();
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/order-status/${encodeURIComponent(stored.reference)}`);
+      const order = await res.json();
+
+      if (order.status === 'success'){
+        showToast(order.customer_message || 'Your airtime purchase was successful!', 'success', 6000);
+        clearPendingRef();
+      } else if (order.status === 'failed'){
+        showToast(order.customer_message || 'There was a problem with your last order. Please contact support.', 'error', 6000);
+        clearPendingRef();
+      } else {
+        showToast("Still confirming your last payment — you'll get an SMS from your network once your airtime is delivered.", 'info', 6000);
+      }
+    } catch (e) {
+      // couldn't reach the server — just try again next visit
+    }
   }
 
   function nairaFmt(n){ return '₦' + Math.round(n).toLocaleString(); }
@@ -486,6 +532,7 @@
       const data = await res.json();
 
       if (data.status === true && data.authorization_url) {
+        storePendingRef(data.reference);
         showToast('Redirecting to secure payment...', 'success');
         closeConfirmModal();
         setTimeout(() => {
@@ -502,6 +549,8 @@
       setButtonLoading(buyBtn, false, '.btn-label');
     }
   });
+
+  checkPendingPurchase();
 </script>
 
 </body>
